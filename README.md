@@ -33,10 +33,12 @@ This project demonstrates a full pipeline of:
 ## 🖼 Screenshots
 
 
-```md
-![Streamlit App](images/eda.png)
-![EDA Plot](images/streamlit.png)
-```
+### 🖼 Streamlit App Interface
+<img src="images/streamlit.png" width="600"/>
+
+### 📊 EDA Visualization
+<img src="images/eda.png" width="600"/>
+
 
 ---
 
