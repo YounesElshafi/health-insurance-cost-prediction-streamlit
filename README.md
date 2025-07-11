@@ -26,7 +26,7 @@ This project demonstrates a full pipeline of:
 * ✅ Automatic model selection based on smoking status
 * 🔁 Manual override to use the general model
 * 📊 User-friendly sliders and dropdowns
-* 📦 Trained models saved via `joblib`
+* 📦 Trained models and saved 
 
 ---
 
@@ -46,9 +46,24 @@ This project demonstrates a full pipeline of:
 
 ```
 │
+├── app/
+│   └── main.py     
+|
 ├── data/
 │   ├── download_data.ipynb
-│   └── insurance.csv              
+│   └── insurance.csv
+|
+├── images/
+|   ├── eda.png
+│   └── streamlit.png
+|
+├── models/
+│   ├── model_all.pkl
+│   ├── model_nonsmokers.pkl
+│   ├── model_smokers.pkl
+│   ├── scaler_all.pkl
+│   ├── scaler_nonsmokers.pkl
+│   └── scaler_smokers.pkl
 │
 ├── notebooks/
 │   ├── 01_EDA.ipynb                
@@ -57,9 +72,8 @@ This project demonstrates a full pipeline of:
 ├── src/
 │   └── preprocessing.py            
 │
-├── app/
-│   └── main.py
-│
+├── .gitignore           
+├── LICENSE               
 ├── requirements.txt                
 ├── README.md               
         
@@ -73,7 +87,7 @@ This project demonstrates a full pipeline of:
 1. **Clone the repository**:
 
 ```bash
-git clone https://github.com/usif elshafi/Medical Insurance Cost Prediction.git
+git clone https://github.com/YounesElshafi/Medical Insurance Cost Prediction.git
 cd Medical Insurance Cost Prediction
 ```
 
@@ -126,9 +140,9 @@ streamlit run app/main.py
 
 ## 📧 Contact
 
-Made by **Usif Elshafie** — feel free to connect!
+Made by **Younes Elshafi** — feel free to connect!
 
-email : usifelshafie305@gmail.com
+email : younes.ai.dev@gmail.com
 
 
 ## 📄 License
