@@ -1,20 +1,22 @@
 import streamlit as st
-import joblib
-import numpy as np
+import sys
 import os
+
+# Add parent directory to path 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from app.utils import (
+    load_models_and_scalers,
+    validate_inputs,
+    prepare_features,
+    select_model,
+    format_prediction
+)
 
 # ---------------------------
 # Load models and scalers
 # ---------------------------
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-model_smoker = joblib.load(os.path.join(BASE_DIR, "models", "model_smokers.pkl"))
-scaler_smoker = joblib.load(os.path.join(BASE_DIR, "models", "scaler_smokers.pkl"))
-
-model_nonsmoker = joblib.load(os.path.join(BASE_DIR, "models", "model_nonsmokers.pkl"))
-scaler_nonsmoker = joblib.load(os.path.join(BASE_DIR, "models", "scaler_nonsmokers.pkl"))
-
-model_all = joblib.load(os.path.join(BASE_DIR, "models", "model_all.pkl"))
-scaler_all = joblib.load(os.path.join(BASE_DIR, "models", "scaler_all.pkl"))
+models, scalers = load_models_and_scalers()
 
 # ---------------------------
 # Streamlit UI
@@ -39,49 +41,22 @@ with col2:
 # Optional override for general model
 use_general_model = st.checkbox("🔁 Force using general model (all data)", value=False)
 
-# Encode categorical variables
-sex_val = 0 if sex == "male" else 1
-smoker_val = 1 if smoker == "yes" else 0
+# Validate inputs
+validation_errors = validate_inputs(age, bmi, children)
+if validation_errors:
+    for error in validation_errors:
+        st.error(f"❌ {error}")
+    st.stop()
 
-region_dict = {
-    "northeast": [0, 0, 0],
-    "northwest": [1, 0, 0],
-    "southeast": [0, 1, 0],
-    "southwest": [0, 0, 1]
-}
-region_encoded = region_dict[region]
+# Select model and scaler
+model, scaler, model_name = select_model(smoker, use_general_model, models, scalers)
+st.write(f"✅ Using: {model_name}")
 
-# Scale numeric input
-numeric_features = np.array([[age, bmi, children]])
-
-# Choose model and scaler
-if use_general_model:
-    model = model_all
-    scaler = scaler_all
-    st.write("✅ Using: General model (all data)")
-elif smoker == "yes":
-    model = model_smoker
-    scaler = scaler_smoker
-    st.write("✅ Using: Smoker model")
-elif smoker == "no":
-    model = model_nonsmoker
-    scaler = scaler_nonsmoker
-    st.write("✅ Using: Non-smoker model")
-else:
-    model = model_all
-    scaler = scaler_all
-    st.write("✅ Using: General model (fallback)")
-
-scaled_numeric = scaler.transform(numeric_features)
-
-# Combine all inputs
-features = np.concatenate([
-    scaled_numeric[0],
-    [sex_val, smoker_val],
-    region_encoded
-]).reshape(1, -1)
+# Prepare features for prediction
+features = prepare_features(age, bmi, children, sex, smoker, region, scaler)
 
 # Predict
 if st.button("Predict Insurance Charges"):
     prediction = model.predict(features)[0]
-    st.success(f"💵 Estimated Insurance Cost: ${prediction:,.2f}")
+    formatted_prediction = format_prediction(prediction)
+    st.success(f"💵 Estimated Insurance Cost: {formatted_prediction}")

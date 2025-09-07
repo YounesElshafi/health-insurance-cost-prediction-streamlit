@@ -41,9 +41,9 @@ def split_features_targets(df, target='charges'):
 # -----------------------------------------------
 # 4. Split the dataset into training and testing sets
 # -----------------------------------------------
-def split_train_test(X, y, test_size=0.2, random_state=42):
+def split_train_test(X, y):
     """Split the dataset into training and testing sets"""
-    return train_test_split(X, y, test_size=test_size, random_state=random_state)
+    return train_test_split(X, y, test_size=0.2, random_state=42)
 
 
 # -----------------------------------------------
@@ -75,7 +75,7 @@ def split_by_smoker(df):
 
 
 # -----------------------------------------------
-# 7. Full preprocessing pipeline
+# 7. preprocessing pipeline
 # -----------------------------------------------
 def preprocess_pipeline(path, target='charges'):
     """
