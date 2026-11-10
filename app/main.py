@@ -16,14 +16,15 @@ from app.utils import (
 # ---------------------------
 # Load models and scalers
 # ---------------------------
+st.set_page_config(page_title="Insurance Cost Predictor", layout="centered")
 models, scalers = load_models_and_scalers()
 
 # ---------------------------
 # Streamlit UI
 # ---------------------------
-st.set_page_config(page_title="Insurance Cost Predictor", layout="centered")
 st.title("💰 Medical Insurance Cost Predictor")
 st.write("Fill in the form to predict the expected insurance cost.")
+st.caption("Educational estimate based on the dataset. Actual insurance quotes depend on the insurer and plan.")
 
 # Inputs
 col1, col2 = st.columns(2)

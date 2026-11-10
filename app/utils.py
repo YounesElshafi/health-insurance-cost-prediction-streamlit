@@ -4,7 +4,7 @@ Utility functions
 
 import streamlit as st
 import joblib
-import numpy as np
+import pandas as pd
 import logging
 from config import (
     MODEL_PATHS, 
@@ -12,7 +12,8 @@ from config import (
     REGION_ENCODING, 
     SEX_ENCODING, 
     SMOKER_ENCODING,
-    INPUT_RANGES
+    INPUT_RANGES,
+    NUMERIC_FEATURES,
 )
 
 logger = logging.getLogger(__name__)
@@ -77,17 +78,21 @@ def prepare_features(age, bmi, children, sex, smoker, region, scaler):
     # Encode categorical variables
     sex_val, smoker_val, region_encoded = encode_categorical_features(sex, smoker, region)
     
-    # Scale numeric features
-    numeric_features = np.array([[age, bmi, children]])
-    scaled_numeric = scaler.transform(numeric_features)
-    
-    # Combine all features
-    features = np.concatenate([
-        scaled_numeric[0],
-        [sex_val, smoker_val],
-        region_encoded
-    ]).reshape(1, -1)
-    
+    numeric_features = pd.DataFrame([[age, bmi, children]], columns=NUMERIC_FEATURES)
+    scaled_age, scaled_bmi, scaled_children = scaler.transform(numeric_features)[0]
+    northwest, southeast, southwest = region_encoded
+
+    # Match the column order produced by the training notebook's encode_data call.
+    features = pd.DataFrame({
+        "age": [scaled_age],
+        "sex": [sex_val],
+        "bmi": [scaled_bmi],
+        "children": [scaled_children],
+        "smoker": [smoker_val],
+        "region_northwest": [northwest],
+        "region_southeast": [southeast],
+        "region_southwest": [southwest],
+    })
     return features
 
 def select_model(smoker, use_general_model, models, scalers):
